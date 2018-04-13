@@ -14,11 +14,13 @@ var renderer,
     user_audio_amp,
     audio_wireframe = true,
     primaryColor = null,
-    secondaryColor = null;
+    secondaryColor = null,
+    bg_file,
+    _properties;
 
 window.wallpaperPropertyListener = {
     applyUserProperties: function (properties) {
-
+        _properties = properties
         function getRgb(prop) {
             var customColor = prop.value.split(' ');
             customColor = customColor.map(function (c) {
@@ -37,10 +39,12 @@ window.wallpaperPropertyListener = {
 
         if (properties.primary_color) {
             primaryColor = getRgb(properties.primary_color)
+            setBackground()
         }
 
         if (properties.secondary_color) {
             secondaryColor = getRgb(properties.secondary_color)
+            setBackground()
         }
 
         if (properties.user_audio_amp) {
@@ -53,25 +57,20 @@ window.wallpaperPropertyListener = {
 
         if (properties.audio_wireframe) {
             audio_wireframe = properties.audio_wireframe.value
-            if (properties.custom_image.value === undefined) {
-                return;
-            }
         }
 
-        if (properties.custom_image || properties.custom_image.value) {
-            setBackground(properties.custom_image)
-            return;
+        if (properties.custom_image) {
+            bg_file = properties.custom_image.value
+            setBackground()
         }
-
-
-        setBackground()
     }
 }
 
 window.onload = function () {
-    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
     init();
     animate();
+    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
+
 }
 
 function rgb2hex(rgb) {
@@ -82,10 +81,8 @@ function rgb2hex(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 
-function setBackground(img) {
+function setBackground() {
     var pC = primaryColor, sC = secondaryColor;
-
-    console.log(pC, sC)
 
     lights[1].color.setHex("0x".concat(rgb2hex(pC)))
     lights[2].color.setHex("0x".concat(rgb2hex(sC)))
@@ -93,19 +90,20 @@ function setBackground(img) {
     var el = document.body
     var currentStyle = el.getAttribute('style');
 
-    if (img !== undefined) {
+    if (bg_file && bg_file !== "") {
+        img = {};
+        img.value = bg_file;
         document.body.style.backgroundImage = "url('" + "file:///".concat(img.value) + "')";
-    } else {
-        styleText = 'background: -webkit-linear-gradient(top, ' + pC + ' 0%, ' + sC + ' 100%);' +
+    }
+
+    if (bg_file === "" || bg_file === undefined || bg_file === null) {
+        var styleText = 'background: -webkit-linear-gradient(top, ' + pC + ' 0%, ' + sC + ' 100%);' +
             'background: -o-linear-gradient(top, ' + pC + ' 0%, ' + sC + ' 100%); ' +
             'background: -ms-linear-gradient(top, ' + pC + ' 0%,  ' + sC + ' 100%);' +
             'background: linear-gradient(to bottom, ' + pC + ' 0%,  ' + sC + ' 100%);';
 
         el.setAttribute('style', styleText);
-
     }
-
-
 }
 
 function wallpaperAudioListener(audioArr) {
@@ -113,6 +111,11 @@ function wallpaperAudioListener(audioArr) {
 }
 
 function debug(write) {
+    if (write === undefined) {
+        write = 'undefined'
+    } else if (write === "") {
+        write = '""'
+    }
     var debug = document.getElementById('info')
     debug.innerHTML = write
 }
@@ -250,7 +253,7 @@ function animate() {
                     var noiseY = vertex.y + time * 0.0008
                     var noiseZ = vertex.z + time * 0.0009
                     var planetNoise = noise.noise3D(noiseX, noiseY, noiseZ)
-                    var user_amp = eval("1.".concat(user_audio_amp || 01))
+                    var user_amp = eval("1.".concat(user_audio_amp || "01"))
                     var distance = offset + planetNoise * amp * (audioArray[i] * user_amp);
                     vertex.multiplyScalar(distance);
                 });
