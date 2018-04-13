@@ -16,59 +16,60 @@ var renderer,
     primaryColor = null,
     secondaryColor = null;
 
-window.onload = function () {
-    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
-    window.wallpaperPropertyListener = {
-        applyUserProperties: function (properties) {
+window.wallpaperPropertyListener = {
+    applyUserProperties: function (properties) {
 
-            function getRgb(prop) {
-                var customColor = prop.value.split(' ');
-                customColor = customColor.map(function (c) {
-                    return Math.ceil(c * 255);
-                });
-                return 'rgb(' + customColor + ')';
+        function getRgb(prop) {
+            var customColor = prop.value.split(' ');
+            customColor = customColor.map(function (c) {
+                return Math.ceil(c * 255);
+            });
+            return 'rgb(' + customColor + ')';
+        }
+
+        if (primaryColor === null) {
+            primaryColor = getRgb(properties.primary_color)
+        }
+
+        if (secondaryColor === null) {
+            secondaryColor = getRgb(properties.secondary_color)
+        }
+
+        if (properties.primary_color) {
+            primaryColor = getRgb(properties.primary_color)
+        }
+
+        if (properties.secondary_color) {
+            secondaryColor = getRgb(properties.secondary_color)
+        }
+
+        if (properties.user_audio_amp) {
+            var n = properties.user_audio_amp.value;
+            if (n <= 10) {
+                n = "0" + n
             }
+            user_audio_amp = n
+        }
 
-            if (primaryColor === null) {
-                primaryColor = getRgb(properties.primary_color)
-            }
-
-            if (secondaryColor === null) {
-                secondaryColor = getRgb(properties.secondary_color)
-            }
-
-            if (properties.primary_color) {
-                primaryColor = getRgb(properties.primary_color)
-            }
-
-            if (properties.secondary_color) {
-                secondaryColor = getRgb(properties.secondary_color)
-            }
-
-            if (properties.user_audio_amp) {
-                var n = properties.user_audio_amp.value;
-                if (n <= 10) {
-                    n = "0" + n
-                }
-                user_audio_amp = n
-            }
-
-            if (properties.audio_wireframe) {
-                audio_wireframe = properties.audio_wireframe.value
-                if (properties.custom_image.value === undefined) {
-                    return;
-                }
-            }
-
-            if (properties.custom_image || properties.custom_image.value) {
-                setBackground(properties.custom_image)
+        if (properties.audio_wireframe) {
+            audio_wireframe = properties.audio_wireframe.value
+            if (properties.custom_image.value === undefined) {
                 return;
             }
-
-
-            setBackground()
         }
+
+        if (properties.custom_image || properties.custom_image.value) {
+            setBackground(properties.custom_image)
+            return;
+        }
+
+
+        setBackground()
     }
+}
+
+window.onload = function () {
+    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
     init();
     animate();
 }
