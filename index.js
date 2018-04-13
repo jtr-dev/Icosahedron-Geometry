@@ -14,17 +14,12 @@ var renderer,
     user_audio_amp,
     audio_wireframe = true,
     primaryColor = null,
-    secondaryColor = null,
-    didLoad = false;
+    secondaryColor = null;
 
 window.onload = function () {
     window.wallpaperRegisterAudioListener(wallpaperAudioListener);
     window.wallpaperPropertyListener = {
         applyUserProperties: function (properties) {
-
-            if (properties) {
-                didLoad = true;
-            }
 
             function getRgb(prop) {
                 var customColor = prop.value.split(' ');
@@ -34,11 +29,8 @@ window.onload = function () {
                 return 'rgb(' + customColor + ')';
             }
 
-            // debug(properties.primary_color.value)
-
             if (primaryColor === null) {
                 primaryColor = getRgb(properties.primary_color)
-                // debug(primaryColor.toString())
             }
 
             if (secondaryColor === null) {
@@ -63,9 +55,9 @@ window.onload = function () {
 
             if (properties.audio_wireframe) {
                 audio_wireframe = properties.audio_wireframe.value
-                // if (properties.custom_image.value === undefined) {
-                //     return;
-                // }
+                if (properties.custom_image.value === undefined) {
+                    return;
+                }
             }
 
             if (properties.custom_image || properties.custom_image.value) {
@@ -77,10 +69,8 @@ window.onload = function () {
             setBackground()
         }
     }
-    setTimeout(function() {
-        init();
-        animate();
-    }, 500)
+    init();
+    animate();
 }
 
 function rgb2hex(rgb) {
@@ -259,7 +249,7 @@ function animate() {
                     var noiseY = vertex.y + time * 0.0008
                     var noiseZ = vertex.z + time * 0.0009
                     var planetNoise = noise.noise3D(noiseX, noiseY, noiseZ)
-                    var user_amp = eval("1.".concat(user_audio_amp|| 01))
+                    var user_amp = eval("1.".concat(user_audio_amp || 01))
                     var distance = offset + planetNoise * amp * (audioArray[i] * user_amp);
                     vertex.multiplyScalar(distance);
                 });
