@@ -1,0 +1,58 @@
+{
+	"contentrating" : "Everyone",
+	"description" : "Abstract Audio Visualization",
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"audio_wireframe" : 
+			{
+				"text" : "Audio Visualization on Wireframe",
+				"type" : "bool",
+				"value" : true
+			},
+			"custom_image" : 
+			{
+				"text" : "User image",
+				"type" : "file"
+			},
+			"primary_color" : 
+			{
+				"text" : "Primary Color",
+				"type" : "color",
+				"value" : "0.10196078431372549 0.09803921568627451 0.1411764705882353"
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0.19215686274509805 0.058823529411764705 0.058823529411764705"
+			},
+			"secondary_color" : 
+			{
+				"text" : "Secondary Color",
+				"type" : "color",
+				"value" : "0 0.5019607843137255 0.6823529411764706"
+			},
+			"user_audio_amp" : 
+			{
+				"editable" : true,
+				"max" : 99,
+				"min" : 1,
+				"text" : "Audio Amplifier",
+				"type" : "slider",
+				"value" : 1
+			}
+		},
+		"supportsaudioprocessing" : true
+	},
+	"monetization" : false,
+	"preview" : "preview.jpg",
+	"tags" : [ "Abstract" ],
+	"title" : "Icosahedron Geometry",
+	"type" : "web",
+	"visibility" : "public",
+	"workshopid" : 1321411879
+}
