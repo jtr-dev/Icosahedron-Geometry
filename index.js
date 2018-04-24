@@ -16,7 +16,8 @@ var renderer,
     primaryColor = null,
     secondaryColor = null,
     bg_file,
-    _properties;
+    move_bg,
+    bass_wireframe;
 
 window.wallpaperPropertyListener = {
     applyUserProperties: function (properties) {
@@ -59,10 +60,20 @@ window.wallpaperPropertyListener = {
             audio_wireframe = properties.audio_wireframe.value
         }
 
+        if (properties.move_background_bass) {
+            move_bg = properties.move_background_bass.value
+        }
+
+        if (properties.bass_wireframe) {
+            bass_wireframe = properties.bass_wireframe.value
+        }
+
         if (properties.custom_image) {
             bg_file = properties.custom_image.value
             setBackground()
         }
+
+
     }
 }
 
@@ -237,7 +248,7 @@ function animate() {
         var planets = [planet]
     }
 
-    if (audioArray != undefined) {
+    if (audioArray !== undefined) {
         var random = Math.floor(Math.random() * audioArray.length - 100)
         // planet
         planets.map(planet => {
@@ -246,16 +257,34 @@ function animate() {
                 .vertices
                 .forEach(function (vertex, i) {
                     var offset = planet.geometry.parameters.radius;
-                    var amp = 1.8
+                    var amp = 1.1;
                     var time = Date.now();
                     vertex.normalize();
-                    var noiseX = vertex.x + time * 0.0007
-                    var noiseY = vertex.y + time * 0.0008
-                    var noiseZ = vertex.z + time * 0.0009
+                    var noiseX = vertex.x + time * 0.0002
+                    var noiseY = vertex.y + time * 0.0005
+                    var noiseZ = vertex.z + time * 0.0008
                     var planetNoise = noise.noise3D(noiseX, noiseY, noiseZ)
-                    var user_amp = eval("1.".concat(user_audio_amp || "01"))
-                    var distance = offset + planetNoise * amp * (audioArray[i] * user_amp);
-                    vertex.multiplyScalar(distance);
+                    var user_amp = eval("1.".concat(user_audio_amp || "50"))
+                    var distance = offset + audioArray[i]
+                    if (audioArray[i] > 1) {
+                        if (audio_wireframe === false && bass_wireframe) {
+                            audio_wireframe = true
+                            setTimeout(() => {
+                                audio_wireframe = false
+                            }, 250)
+                        }
+                        var distance = offset + planetNoise * amp * audioArray[i];
+                        if (move_bg) {
+                            particle.rotation.x += Math.random() * 0.0005;
+                            particle.rotation.y -= Math.random() * 0.0040;
+                            circle.rotation.x += 0.0020;
+                            circle.rotation.y -= 0.0040;
+                        }
+                        // skelet.rotation.x -= 0.0010;
+                        // skelet.rotation.y += 0.0020;
+                    }
+                    // vertex.multiplyScalar(distance >= 15 ? 15 : distance <= 0 ? 1 : distance);
+                    vertex.multiplyScalar(distance <= 0 ? 1 : distance)
                 });
             planet.geometry.verticesNeedUpdate = true;
             planet.geometry.normalsNeedUpdate = true;

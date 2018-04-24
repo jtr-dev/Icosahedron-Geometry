@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Abstract Audio Visualization",
+	"description" : "Abstract Audio Visualization\n\n\n\n\n[Changelog] \n\n4/13/2018: Fixed issues with background image and properties reseting\n\n4/23/2018: Added bass options and a sweet gif; Possibly fixed issue with vectors getting stuck inward",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -12,10 +12,22 @@
 				"type" : "bool",
 				"value" : true
 			},
+			"bass_wireframe" : 
+			{
+				"text" : "Bass moves wireframe too (if audio wireframe is disabled)",
+				"type" : "bool",
+				"value" : false
+			},
 			"custom_image" : 
 			{
 				"text" : "User image",
 				"type" : "file"
+			},
+			"move_background_bass" : 
+			{
+				"text" : "Bass moves stuff",
+				"type" : "bool",
+				"value" : false
 			},
 			"primary_color" : 
 			{
@@ -28,7 +40,7 @@
 				"order" : 0,
 				"text" : "ui_browse_properties_scheme_color",
 				"type" : "color",
-				"value" : "0.19215686274509805 0.058823529411764705 0.058823529411764705"
+				"value" : "0 0.6392156862745098 0.6392156862745098"
 			},
 			"secondary_color" : 
 			{
@@ -49,7 +61,7 @@
 		"supportsaudioprocessing" : true
 	},
 	"monetization" : false,
-	"preview" : "preview.jpg",
+	"preview" : "preview.gif",
 	"tags" : [ "Abstract" ],
 	"title" : "Icosahedron Geometry",
 	"type" : "web",
