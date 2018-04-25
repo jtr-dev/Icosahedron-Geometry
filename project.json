@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Abstract Audio Visualization\n\n\n\n\n[Changelog] \n\n4/13/2018: Fixed issues with background image and properties reseting\n\n4/23/2018: Added bass options and a sweet gif; Possibly fixed issue with vectors getting stuck inward",
+	"description" : "Abstract Audio Visualization\n\n[Changelog] \n\n4/13/2018: Fixed issues with background image and properties reseting\n\n4/23/2018: Added bass options and a sweet gif; Possibly fixed issue with vectors getting stuck inward\n\n4/24/2018: Added X,Y,Z to move the cube around; Third Color option; Ordered Properties around",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -8,105 +8,106 @@
 		{
 			"audio_wireframe" : 
 			{
-				"order": 4,
+				"order" : 4,
 				"text" : "Audio Visualization on Wireframe",
 				"type" : "bool",
 				"value" : true
 			},
 			"bass_wireframe" : 
 			{
-				"order": 4,
+				"condition" : "!audio_wireframe.value",
+				"order" : 4,
 				"text" : "Bass moves wireframe too (if audio wireframe is disabled)",
 				"type" : "bool",
-				"value" : false,
-				"condition" : "!audio_wireframe.value"
+				"value" : false
+			},
+			"cube_x" : 
+			{
+				"condition" : "move_cube.value",
+				"editable" : true,
+				"max" : 800,
+				"min" : -800,
+				"order" : 7,
+				"text" : "Cube X - (default 0)",
+				"type" : "slider",
+				"value" : 0
+			},
+			"cube_y" : 
+			{
+				"condition" : "move_cube.value",
+				"editable" : true,
+				"max" : 500,
+				"min" : -500,
+				"order" : 8,
+				"text" : "Cube Y - (default 0)",
+				"type" : "slider",
+				"value" : 0
+			},
+			"cube_z" : 
+			{
+				"condition" : "move_cube.value",
+				"editable" : true,
+				"max" : 500,
+				"min" : -800,
+				"order" : 9,
+				"text" : "Cube Z - (default 0)",
+				"type" : "slider",
+				"value" : 0
 			},
 			"custom_image" : 
 			{
-				"order": 0,
+				"order" : 0,
 				"text" : "User image",
 				"type" : "file"
 			},
 			"move_background_bass" : 
 			{
-				"order": 5,
+				"order" : 5,
 				"text" : "Bass moves stuff",
 				"type" : "bool",
 				"value" : false
 			},
-			"move_cube": 
+			"move_cube" : 
 			{
-				"order": 6,
-				"text": "Move me?",
-				"type": "bool",
-				"value": false
-			},
-			"cube_x" : 
-			{
-				"order": 7,
-				"editable" : true,
-				"max" : 800,
-				"min" : -800,
-				"text" : "Cube X - (default 0)",
-				"type" : "slider",
-				"value" : 0,
-				"condition": "move_cube.value"
-			},
-			"cube_y" : 
-			{
-				"order": 8,
-				"editable": true,
-				"max": 500,
-				"min": -500,
-				"text": "Cube Y - (default 0)",
-				"type": "slider",
-				"value": 0,
-				"condition": "move_cube.value"				
-			},
-			"cube_z" : 
-			{
-				"order": 9,
-				"editable": true,
-				"max": 500,
-				"min": -800,
-				"text": "Cube Z - (default 0)",
-				"type": "slider",
-				"value": 0,
-				"condition": "move_cube.value"				
+				"order" : 6,
+				"text" : "Move me?",
+				"type" : "bool",
+				"value" : false
 			},
 			"primary_color" : 
 			{
-				"order": 1,
+				"order" : 1,
 				"text" : "Primary Color",
 				"type" : "color",
 				"value" : "0.10196078431372549 0.09803921568627451 0.1411764705882353"
 			},
 			"schemecolor" : 
 			{
-				"order": 99,
+				"order" : 99,
 				"text" : "ui_browse_properties_scheme_color",
 				"type" : "color",
 				"value" : "0 0.6392156862745098 0.6392156862745098"
 			},
 			"secondary_color" : 
 			{
-				"order": 2,
+				"order" : 2,
 				"text" : "Secondary Color",
 				"type" : "color",
 				"value" : "0 0.5019607843137255 0.6823529411764706"
 			},
-			"third_color" : {
-				"order": 3,
-				"text": "Third Color",
-				"type": "color",
-				"value": "1 1 1"
+			"third_color" : 
+			{
+				"order" : 3,
+				"text" : "Third Color",
+				"type" : "color",
+				"value" : "1 1 1"
 			},
 			"user_audio_amp" : 
 			{
-				"order": 15,
 				"editable" : true,
 				"max" : 99,
 				"min" : 1,
+				"order" : 15,
 				"text" : "Audio Amplifier",
 				"type" : "slider",
 				"value" : 1
