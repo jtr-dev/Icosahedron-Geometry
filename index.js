@@ -15,6 +15,7 @@ var renderer,
     audio_wireframe = true,
     primaryColor = null,
     secondaryColor = null,
+    thirdColor = null,
     bg_file,
     move_bg,
     bass_wireframe;
@@ -38,6 +39,10 @@ window.wallpaperPropertyListener = {
             secondaryColor = getRgb(properties.secondary_color)
         }
 
+        if (thirdColor === null) {
+            thirdColor = getRgb(properties.third_color)
+        }
+
         if (properties.primary_color) {
             primaryColor = getRgb(properties.primary_color)
             setBackground()
@@ -45,6 +50,11 @@ window.wallpaperPropertyListener = {
 
         if (properties.secondary_color) {
             secondaryColor = getRgb(properties.secondary_color)
+            setBackground()
+        }
+
+        if (properties.third_color) {
+            thirdColor = getRgb(properties.third_color)
             setBackground()
         }
 
@@ -73,6 +83,17 @@ window.wallpaperPropertyListener = {
             setBackground()
         }
 
+        if (properties.cube_x) {
+            circle.position.x = skelet.position.x = properties.cube_x.value
+        }
+
+        if (properties.cube_y) {
+            circle.position.y = skelet.position.y = properties.cube_y.value
+        }
+
+        if (properties.cube_z) {
+            circle.position.z = skelet.position.z = properties.cube_z.value
+        }
 
     }
 }
@@ -81,7 +102,6 @@ window.onload = function () {
     init();
     animate();
     window.wallpaperRegisterAudioListener(wallpaperAudioListener);
-
 }
 
 function rgb2hex(rgb) {
@@ -93,8 +113,9 @@ function rgb2hex(rgb) {
 }
 
 function setBackground() {
-    var pC = primaryColor, sC = secondaryColor;
+    var pC = primaryColor, sC = secondaryColor, tC = thirdColor;
 
+    lights[0].color.setHex("0x".concat(rgb2hex(tC)))
     lights[1].color.setHex("0x".concat(rgb2hex(pC)))
     lights[2].color.setHex("0x".concat(rgb2hex(sC)))
 
@@ -207,21 +228,16 @@ function init() {
     var ambientLight = new THREE.AmbientLight(0x999999);
     scene.add(ambientLight);
 
-
-    var primaryColorHash = "#01183c"
-    var secondaryColorHash = "#00436f"
-
-
     lights = [];
     lights[0] = new THREE.DirectionalLight(0xffffff, 1);
     lights[0]
         .position
         .set(1, 0, 0);
-    lights[1] = new THREE.DirectionalLight(primaryColorHash, 1);
+    lights[1] = new THREE.DirectionalLight(0x01183c, 1);
     lights[1]
         .position
         .set(0.75, 1, 0.5);
-    lights[2] = new THREE.DirectionalLight(secondaryColorHash, 1);
+    lights[2] = new THREE.DirectionalLight(0x00436f, 1);
     lights[2]
         .position
         .set(-0.75, -1, 0.5);
@@ -280,10 +296,7 @@ function animate() {
                             circle.rotation.x += 0.0020;
                             circle.rotation.y -= 0.0040;
                         }
-                        // skelet.rotation.x -= 0.0010;
-                        // skelet.rotation.y += 0.0020;
                     }
-                    // vertex.multiplyScalar(distance >= 15 ? 15 : distance <= 0 ? 1 : distance);
                     vertex.multiplyScalar(distance <= 0 ? 1 : distance)
                 });
             planet.geometry.verticesNeedUpdate = true;
