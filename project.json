@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Abstract Audio Visualization\n\n[Changelog] \n\n4/13/2018: Fixed issues with background image and properties reseting\n\n4/23/2018: Added bass options and a sweet gif; Possibly fixed issue with vectors getting stuck inward\n\n4/24/2018: Added X,Y,Z to move the cube around; Third Color option; Ordered Properties around",
+	"description" : "[Changelog] \n- check change notes",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -105,12 +105,12 @@
 			"user_audio_amp" : 
 			{
 				"editable" : true,
-				"max" : 99,
-				"min" : 1,
+				"max" : 100,
+				"min" : 10,
 				"order" : 15,
 				"text" : "Audio Amplifier",
 				"type" : "slider",
-				"value" : 1
+				"value" : 80
 			}
 		},
 		"supportsaudioprocessing" : true
@@ -121,5 +121,5 @@
 	"title" : "Icosahedron Geometry",
 	"type" : "web",
 	"visibility" : "public",
-	"workshopid" : 1321411879
+	"workshopid" : "1321411879"
 }

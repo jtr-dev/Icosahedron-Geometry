@@ -22,7 +22,7 @@ var renderer,
 
 window.wallpaperPropertyListener = {
     applyUserProperties: function (properties) {
-        _properties = properties
+
         function getRgb(prop) {
             var customColor = prop.value.split(' ');
             customColor = customColor.map(function (c) {
@@ -107,17 +107,25 @@ window.onload = function () {
 function rgb2hex(rgb) {
     rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
     return (rgb && rgb.length === 4) ? "" +
-        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
-        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
-        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+    ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+    ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+    ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 
 function setBackground() {
-    var pC = primaryColor, sC = secondaryColor, tC = thirdColor;
+    var pC = primaryColor,
+        sC = secondaryColor,
+        tC = thirdColor;
 
-    lights[0].color.setHex("0x".concat(rgb2hex(tC)))
-    lights[1].color.setHex("0x".concat(rgb2hex(pC)))
-    lights[2].color.setHex("0x".concat(rgb2hex(sC)))
+    lights[0]
+        .color
+        .setHex("0x".concat(rgb2hex(tC)))
+    lights[1]
+        .color
+        .setHex("0x".concat(rgb2hex(pC)))
+    lights[2]
+        .color
+        .setHex("0x".concat(rgb2hex(sC)))
 
     var el = document.body
     var currentStyle = el.getAttribute('style');
@@ -125,15 +133,15 @@ function setBackground() {
     if (bg_file && bg_file !== "") {
         img = {};
         img.value = bg_file;
-        document.body.style.backgroundImage = "url('" + "file:///".concat(img.value) + "')";
+        document.body.style.backgroundImage = "url('file:///".concat(img.value) + "')";
     }
 
     if (bg_file === "" || bg_file === undefined || bg_file === null) {
         var styleText = 'background: -webkit-linear-gradient(top, ' + pC + ' 0%, ' + sC + ' 100%);' +
-            'background: -o-linear-gradient(top, ' + pC + ' 0%, ' + sC + ' 100%); ' +
-            'background: -ms-linear-gradient(top, ' + pC + ' 0%,  ' + sC + ' 100%);' +
-            'background: linear-gradient(to bottom, ' + pC + ' 0%,  ' + sC + ' 100%);';
-
+        'background: -o-linear-gradient(top, ' + pC + ' 0%, ' + sC + ' 100%); ' +
+        'background: -ms-linear-gradient(top, ' + pC + ' 0%,  ' + sC + ' 100%);' +
+        'background: linear-gradient(to bottom, ' + pC + ' 0%,  ' + sC + ' 100%);';
+        
         el.setAttribute('style', styleText);
     }
 }
@@ -255,6 +263,28 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+function moveObject(prop, math, num, timer = 0) {
+    if (math === 'add') {
+        prop += num
+    }
+
+    if (math === "subtract") {
+        prop -= num
+    }
+
+    if (math === 'bounce') {
+        prop.x += num
+        prop.y += num
+        prop.z += num
+
+        setTimeout(() => {
+            prop.x -= num
+            prop.y -= num
+            prop.z -= num
+        }, timer)
+    }
+}
+
 function animate() {
     requestAnimationFrame(animate)
 
@@ -265,48 +295,82 @@ function animate() {
     }
 
     if (audioArray !== undefined) {
-        var random = Math.floor(Math.random() * audioArray.length - 100)
-        // planet
-        planets.map(planet => {
+        // var random = Math.floor(Math.random() * audioArray.length - 100) var amp = 1.1;
+        var user_amp = eval("1.".concat(user_audio_amp || "80"))
+        var bass_user_amp = eval("0.".concat(user_audio_amp || "80"))
+
+        // var user_amp = 1.99 var baseAmp = eval("0.".concat(user_audio_amp)) planet
+        planets.map(function (planet) {
             planet
                 .geometry
                 .vertices
                 .forEach(function (vertex, i) {
-                    var offset = planet.geometry.parameters.radius;
-                    var amp = 1.1;
-                    var time = Date.now();
-                    vertex.normalize();
-                    var noiseX = vertex.x + time * 0.0002
-                    var noiseY = vertex.y + time * 0.0005
-                    var noiseZ = vertex.z + time * 0.0008
-                    var planetNoise = noise.noise3D(noiseX, noiseY, noiseZ)
-                    var user_amp = eval("1.".concat(user_audio_amp || "50"))
-                    var distance = offset + audioArray[i]
-                    if (audioArray[i] > 1) {
+                    var beat = audioArray[i]
+                    var volume = audioArray.reduce(function (a, b) { return a + b })
+                    if (volume <= 2) {
+                        beat = beat * 10
+                    }
+
+                    var offset = planet.geometry.parameters.radius
+                    vertex.normalize()
+                    var distance;
+                    if (user_audio_amp === 100) {
+                        beat = beat * 2
+                        bass_user_amp = 1
+                        distance = offset + beat * user_amp
+                        // distance = offset + beat
+
+                    } else {
+                        beat = beat * user_amp
+                        var time = Date.now()
+                        var noiseX = vertex.x + time * 0.0005
+                        var noiseY = vertex.y + time * 0.0005
+                        var noiseZ = vertex.z + time * 0.0005
+                        var planetNoise = noise.noise3D(noiseX, noiseY, noiseZ)
+                        distance = offset + planetNoise * beat
+                        // if (turn_liquid) {
+                        //     distance = offset + beat + user_amp * planetNoise // turns liquid!?
+                        // }
+                        // if (distance > 15){
+                        //     distance = offset + (beat / 2) * 1.1 
+                        //     debug(distance)
+                        // }
+                    }
+                    // var bass_amp = (bass_user_amp < 0.3) ? 0.3 : (1 - bass_user_amp)
+                    var bass_amp = 1 - bass_user_amp
+                    if (bass_amp <= 0.3) {
+                        bass_amp = 0.3
+                    }
+                    if (i <= 3 && beat > bass_amp) {
                         if (audio_wireframe === false && bass_wireframe) {
                             audio_wireframe = true
-                            setTimeout(() => {
+                            setTimeout(function () {
                                 audio_wireframe = false
                             }, 250)
                         }
-                        var distance = offset + planetNoise * amp * audioArray[i];
                         if (move_bg) {
-                            particle.rotation.x += Math.random() * 0.0005;
-                            particle.rotation.y -= Math.random() * 0.0040;
-                            circle.rotation.x += 0.0020;
-                            circle.rotation.y -= 0.0040;
+                            particle.rotation.x += Math.random() * 0.0005
+                            particle.rotation.y -= Math.random() * 0.0040
+
+                            circle.rotation.x += 0.0020
+                            circle.rotation.y -= 0.0040
+
+                            var timer = (beat * 100) / 0.2
+
+                            moveObject(skelet.position, 'bounce', 0.05, timer)
+                            moveObject(planet.position, 'bounce', 0.05, timer)
+                            moveObject(particle.position, 'bounce', 0.05, timer)
+
                         }
                     }
-                    vertex.multiplyScalar(distance <= 0 ? 1 : distance)
+
+                    vertex.multiplyScalar((distance <= 0.1) ? 1 : distance)
+
                 });
-            planet.geometry.verticesNeedUpdate = true;
-            planet.geometry.normalsNeedUpdate = true;
-            planet
-                .geometry
-                .computeVertexNormals();
-            planet
-                .geometry
-                .computeFaceNormals();
+            planet.geometry.verticesNeedUpdate = true
+            planet.geometry.normalsNeedUpdate = true
+            planet.geometry.computeVertexNormals();
+            planet.geometry.computeFaceNormals();
         })
     }
 
