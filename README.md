@@ -4,6 +4,8 @@ This is a wallpaper designed for Wallpaper Engine.
 
 [Click here to subscribe](https://steamcommunity.com/sharedfiles/filedetails/?id=1321411879)
 
+Fork of an original work [ThreeJS Gradient](https://codepen.io/tr13ze/pen/pbjWwg)
+
 Contains 
  - Audio visualization
  - Ability to upload whatever background images you want 
